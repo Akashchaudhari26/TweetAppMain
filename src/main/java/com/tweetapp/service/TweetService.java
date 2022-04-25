@@ -1,5 +1,7 @@
 package com.tweetapp.service;
 
+import java.util.Optional;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,16 @@ public class TweetService {
 
 		Tweet savedTweet = tweetRepository.save(tweet);
 		log.info("{} Tweet is saved to database", savedTweet);
+	}
+	
+	public void deleteTweet(String tweetId) {
+		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
+		if(!optionalTweet.isPresent()) {
+			throw new IllegalArgumentException("Invalid Tweet Id");
+		}
+		log.info("Validation is successfull for the Tweet: {}",optionalTweet.get());
+		tweetRepository.delete(optionalTweet.get());
+		log.info("successfull deleted the Tweet: {}",optionalTweet.get());
 	}
 
 }
