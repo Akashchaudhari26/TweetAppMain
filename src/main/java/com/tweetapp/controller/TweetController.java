@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tweetapp.domain.TweetReplyRequest;
 import com.tweetapp.domain.TweetRequest;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.producer.TweetProducer;
@@ -50,17 +51,26 @@ public class TweetController {
 	@PutMapping("/{loginId}/update/{tweetId}")
 	public ResponseEntity<?> updateTweet(@PathVariable String loginId, @PathVariable String tweetId,
 			@RequestBody @Valid TweetRequest tweetRequest) {
-		
+
 		tweetRequest.setLoginId(loginId);
-		
+
 		Tweet updatedTweet = tweetService.updateTweet(tweetRequest, tweetId);
-		
+
 		return new ResponseEntity<>(updatedTweet, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/{loginId}/like/{tweetId}")
-	public ResponseEntity<?> likeTweet(@PathVariable String loginId, @PathVariable String tweetId){
-		tweetService.toggleTweetLike(tweetId,loginId);
+	public ResponseEntity<?> likeTweet(@PathVariable String loginId, @PathVariable String tweetId) {
+		tweetService.toggleTweetLike(tweetId, loginId);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@PostMapping("/{loginId}/reply/{tweetId}")
+	public ResponseEntity<?> replyTweet(@PathVariable String loginId, @PathVariable String tweetId,
+			@RequestBody @Valid TweetReplyRequest tweetReplyRequest) {
+		tweetReplyRequest.setLoginId(loginId);
+		tweetReplyRequest.setTweetId(tweetId);
+		Tweet tweet = tweetService.replyTweet(tweetReplyRequest);
+		return new ResponseEntity<>(tweet, HttpStatus.OK);
 	}
 }
