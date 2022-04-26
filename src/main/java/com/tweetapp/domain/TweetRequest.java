@@ -20,6 +20,7 @@ public class TweetRequest {
 	@Size(max = 144)
 	private String message;
 	@Default
-	private String tags="";
+	@Size(max = 50)
+	private String tags = "";
 
 }
