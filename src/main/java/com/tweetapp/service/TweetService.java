@@ -1,5 +1,6 @@
 package com.tweetapp.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tweetapp.domain.TweetRequest;
+import com.tweetapp.model.Like;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.repository.TweetRepository;
 
@@ -35,15 +37,48 @@ public class TweetService {
 		Tweet savedTweet = tweetRepository.save(tweet);
 		log.info("{} Tweet is saved to database", savedTweet);
 	}
-	
+
 	public void deleteTweet(String tweetId) {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
-		if(!optionalTweet.isPresent()) {
+		if (!optionalTweet.isPresent()) {
 			throw new IllegalArgumentException("Invalid Tweet Id");
 		}
-		log.info("Validation is successfull for the Tweet: {}",optionalTweet.get());
+		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		tweetRepository.delete(optionalTweet.get());
-		log.info("successfull deleted the Tweet: {}",optionalTweet.get());
+		log.info("successfull deleted the Tweet: {}", optionalTweet.get());
+	}
+
+	public Tweet updateTweet(TweetRequest tweetRequest, String tweetId) {
+		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
+		if (!optionalTweet.isPresent()) {
+			throw new IllegalArgumentException("Invalid Tweet Id");
+		}
+		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
+		tweetRequest.setTweetId(tweetId);
+		Tweet updatedTweet = Tweet.buildTweet(tweetRequest);
+		tweetRepository.save(updatedTweet);
+		log.info("successfull deleted the Tweet: {}", optionalTweet.get());
+		return updatedTweet;
+	}
+
+	public void toggleTweetLike(String tweetId, String loginId) {
+		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
+		if (!optionalTweet.isPresent()) {
+			throw new IllegalArgumentException("Invalid Tweet Id");
+		}
+		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
+		Tweet tweet = optionalTweet.get();
+		List<Like> likes = tweet.getLikes();
+		Like like = Like.builder().userLoginId(loginId).build();
+		if (likes.contains(like)) {
+			likes.remove(like);
+			log.info("{} unliked Tweet: {}", like, optionalTweet.get());
+		} else {
+			likes.add(like);
+			log.info("{} liked Tweet: {}", like, optionalTweet.get());
+		}
+		tweet.setLikes(likes);
+		tweetRepository.save(tweet);
 	}
 
 }
