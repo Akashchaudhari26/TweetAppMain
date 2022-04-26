@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tweetapp.domain.TweetReplyRequest;
 import com.tweetapp.domain.TweetRequest;
 import com.tweetapp.model.Like;
+import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.repository.TweetRepository;
 
@@ -79,6 +81,22 @@ public class TweetService {
 		}
 		tweet.setLikes(likes);
 		tweetRepository.save(tweet);
+	}
+
+	public Tweet replyTweet(TweetReplyRequest replyRequest) {
+		Optional<Tweet> optionalTweet = tweetRepository.findById(replyRequest.getTweetId());
+		if (!optionalTweet.isPresent()) {
+			throw new IllegalArgumentException("Invalid Tweet Id");
+		}
+		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
+		Tweet tweet = optionalTweet.get();
+		Reply reply = Reply.buildReply(replyRequest);
+		List<Reply> replies = tweet.getReplies();
+		replies.add(reply);
+		tweet.setReplies(replies);
+		tweetRepository.save(tweet);
+		log.info("{} replied to Tweet: {}", replyRequest.getLoginId(), tweet);
+		return tweet;
 	}
 
 }
