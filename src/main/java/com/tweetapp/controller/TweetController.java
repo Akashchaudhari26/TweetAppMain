@@ -1,5 +1,6 @@
 package com.tweetapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tweetapp.domain.TweetLike;
 import com.tweetapp.domain.TweetReplyRequest;
 import com.tweetapp.domain.TweetRequest;
 import com.tweetapp.model.Tweet;
@@ -77,9 +79,23 @@ public class TweetController {
 		return new ResponseEntity<>(tweet, HttpStatus.OK);
 	}
 
-	@GetMapping("/all")
-	public ResponseEntity<List<Tweet>> getAllTweets() {
-		
-		return new ResponseEntity<>(HttpStatus.OK);
+	@GetMapping("/{loginId}")
+	public ResponseEntity<List<TweetLike>> getAllTweetsOfUser(@PathVariable String loginId) {
+		List<TweetLike> tweets = new ArrayList<TweetLike>();
+		tweets = tweetService.getAllTweetsOfUser(loginId);
+		return new ResponseEntity<>(tweets, HttpStatus.OK);
 	}
+	
+	/**
+	 * Should modify url after implementing authentication
+	 * @param loginId
+	 * @return
+	 */
+	@GetMapping("/all/{loginId}")
+	public ResponseEntity<List<TweetLike>> getAllTweets(@PathVariable String loginId) {
+		List<TweetLike> tweets = new ArrayList<TweetLike>();
+		tweets = tweetService.getAllTweets(loginId);
+		return new ResponseEntity<>(tweets, HttpStatus.OK);
+	}
+	
 }

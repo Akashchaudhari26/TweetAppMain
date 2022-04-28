@@ -1,5 +1,6 @@
 package com.tweetapp.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tweetapp.domain.TweetLike;
 import com.tweetapp.domain.TweetReplyRequest;
 import com.tweetapp.domain.TweetRequest;
 import com.tweetapp.model.Like;
@@ -97,6 +99,50 @@ public class TweetService {
 		tweetRepository.save(tweet);
 		log.info("{} replied to Tweet: {}", replyRequest.getLoginId(), tweet);
 		return tweet;
+	}
+
+	public List<TweetLike> getAllTweets(String loginId) {
+		List<Tweet> tweetlist = new ArrayList<Tweet>();
+		tweetlist = tweetRepository.findAll();
+		List<TweetLike> tweets = new ArrayList<TweetLike>();
+		if (tweetlist.size() == 0) {
+			log.info("There are no tweets to retrieve");
+			return tweets;
+		}
+		tweets = isLiked(tweetlist, loginId);
+		log.info(tweets.size() + " tweets and their like status successfully retrieved");
+		return tweets;
+	}
+
+	public List<TweetLike> getAllTweetsOfUser(String loginId) {
+		List<Tweet> tweetlist = new ArrayList<Tweet>();
+		tweetlist = tweetRepository.findByUsername(loginId);
+		List<TweetLike> tweets = new ArrayList<TweetLike>();
+		if (tweetlist.size() == 0) {
+			log.info("There are no tweets to retrieve");
+			return tweets;
+		}
+		tweets = isLiked(tweetlist, loginId);
+		log.info(tweets.size() + " tweets and their like status successfully retrieved");
+		return tweets;
+	}
+
+	/**
+	 * @param tweetlist
+	 * @param loginId
+	 * @return a list of Tweets with likes status updated in tweetlike object
+	 */
+	public List<TweetLike> isLiked(List<Tweet> tweetlist, String loginId) {
+		List<TweetLike> tweets = new ArrayList<TweetLike>();
+		for (Tweet t : tweetlist) {
+			TweetLike tweetItem = new TweetLike(t);
+			if (t.getLikes().contains(loginId)) {
+				tweetItem.setIsLiked(true);
+			}
+			tweetItem.setLikes(t.getLikes().size());
+			tweets.add(tweetItem);
+		}
+		return tweets;
 	}
 
 }
