@@ -16,6 +16,7 @@ import com.tweetapp.model.Like;
 import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.repository.TweetRepository;
+import com.tweetapp.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +26,9 @@ public class TweetService {
 
 	@Autowired
 	TweetRepository tweetRepository;
+
+	@Autowired
+	UserRepository userRepository;
 
 	@Autowired
 	ObjectMapper objectMapper;
