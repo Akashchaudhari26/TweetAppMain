@@ -34,8 +34,11 @@ public class Tweet {
 	private List<Reply> replies = Collections.EMPTY_LIST;
 
 	public static Tweet buildTweet(TweetRequest tweetRequest) {
-		return Tweet.builder().id(tweetRequest.getTweetId()).loginId(tweetRequest.getLoginId())
-				.message(tweetRequest.getMessage()).tags(Arrays.asList(tweetRequest.getTags().split("#")).stream()
+		return Tweet.builder()
+				.id(tweetRequest.getTweetId())
+				.loginId(tweetRequest.getLoginId())
+				.message(tweetRequest.getMessage())
+				.tags(Arrays.asList(tweetRequest.getTags().split("#")).stream()
 						.filter(tag -> !tag.isEmpty()).collect(Collectors.toList()))
 				.build();
 	}
