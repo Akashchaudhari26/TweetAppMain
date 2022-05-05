@@ -1,10 +1,8 @@
 package com.tweetapp.controller;
 
-import javax.activity.InvalidActivityException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +19,7 @@ import com.tweetapp.domain.ForgotPasswordRequest;
 import com.tweetapp.domain.LoginRequest;
 import com.tweetapp.domain.LoginResponse;
 import com.tweetapp.domain.UserRegisterRequest;
+import com.tweetapp.exception.InvalidOperationException;
 import com.tweetapp.model.User;
 import com.tweetapp.security.jwt.JwtUtils;
 import com.tweetapp.service.AuthenticationService;
@@ -39,7 +38,7 @@ public class AuthenticationController {
 	JwtUtils jwtUtils;
 	
 	@PostMapping("/register")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegisterRequest userRegisterRequest ) throws InvalidActivityException {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegisterRequest userRegisterRequest ) throws InvalidOperationException {
 		
 		User registeredUser = authenticationService.registerNewUser(userRegisterRequest);
 		
@@ -47,7 +46,7 @@ public class AuthenticationController {
 	}
 	
 	@GetMapping("/login")
-	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) throws InvalidActivityException{
+	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) throws InvalidOperationException{
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword()));
 		
@@ -61,7 +60,7 @@ public class AuthenticationController {
 	}
 	
 	@GetMapping("/{loginId}/forgot")
-	public ResponseEntity<?> forgotPassword(Authentication authentication, @PathVariable String loginId, @RequestBody ForgotPasswordRequest forgotPasswordRequest) throws InvalidActivityException{
+	public ResponseEntity<?> forgotPassword(Authentication authentication, @PathVariable String loginId, @RequestBody ForgotPasswordRequest forgotPasswordRequest) throws InvalidOperationException{
 		
 		forgotPasswordRequest.setLoginId(loginId);
 		

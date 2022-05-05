@@ -3,6 +3,7 @@ package com.tweetapp.security.jwt;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import javax.activity.InvalidActivityException;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -49,14 +50,14 @@ public class JwtUtils {
 
 	}
 
-	public boolean validateJwtToken(String authToken) {
+	public boolean validateJwtToken(String authToken) throws InvalidActivityException {
 		try {
 			SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
 			return true;
 		} catch (Exception e) {
 			log.info("Invalid token");
-			throw e;
+			throw new InvalidActivityException("Invalid Token: "+e.getMessage());
 		}
 	}
 }

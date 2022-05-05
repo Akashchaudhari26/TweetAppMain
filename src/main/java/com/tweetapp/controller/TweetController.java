@@ -2,7 +2,6 @@ package com.tweetapp.controller;
 
 import java.util.List;
 
-import javax.activity.InvalidActivityException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tweetapp.domain.TweetReplyRequest;
 import com.tweetapp.domain.TweetRequest;
+import com.tweetapp.exception.InvalidOperationException;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.producer.TweetProducer;
 import com.tweetapp.service.TweetService;
@@ -38,7 +38,7 @@ public class TweetController {
 	public ResponseEntity<TweetRequest> postNewTweet(Authentication authentication,@PathVariable String loginId,
 			@RequestBody @Valid TweetRequest tweetRequest) throws Exception {
 		if(!authentication.getName().equals(loginId)) {
-			throw new InvalidActivityException("you cannot perform this action!!");
+			throw new InvalidOperationException("you cannot perform this action!!");
 		}
 		
 		tweetRequest.setLoginId(loginId);
@@ -49,10 +49,10 @@ public class TweetController {
 	}
 
 	@DeleteMapping("/{loginId}/delete/{tweetId}")
-	public ResponseEntity<?> deleteTweet(Authentication authentication,@PathVariable String loginId, @PathVariable String tweetId) throws InvalidActivityException {
+	public ResponseEntity<?> deleteTweet(Authentication authentication,@PathVariable String loginId, @PathVariable String tweetId) throws InvalidOperationException {
 		
 		if(!authentication.getName().equals(loginId)) {
-			throw new InvalidActivityException("you cannot perform this action!!");
+			throw new InvalidOperationException("you cannot perform this action!!");
 		}
 
 		tweetService.deleteTweet(tweetId,loginId);
@@ -62,10 +62,10 @@ public class TweetController {
 
 	@PutMapping("/{loginId}/update/{tweetId}")
 	public ResponseEntity<?> updateTweet(Authentication authentication, @PathVariable String loginId, @PathVariable String tweetId,
-			@RequestBody @Valid TweetRequest tweetRequest) throws InvalidActivityException {
+			@RequestBody @Valid TweetRequest tweetRequest) throws InvalidOperationException {
 
 		if(!authentication.getName().equals(loginId)) {
-			throw new InvalidActivityException("you cannot perform this action!!");
+			throw new InvalidOperationException("you cannot perform this action!!");
 		}
 		
 		tweetRequest.setLoginId(loginId);
