@@ -6,7 +6,10 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tweetapp.domain.ForgotPasswordRequest;
+import com.tweetapp.domain.LoginRequest;
+import com.tweetapp.domain.LoginResponse;
 import com.tweetapp.domain.UserRegisterRequest;
 import com.tweetapp.model.User;
+import com.tweetapp.security.jwt.JwtUtils;
 import com.tweetapp.service.AuthenticationService;
 
 @RestController
@@ -24,7 +30,13 @@ import com.tweetapp.service.AuthenticationService;
 public class AuthenticationController {
 
 	@Autowired
+	AuthenticationManager authenticationManager;
+	
+	@Autowired
 	AuthenticationService authenticationService;
+	
+	@Autowired
+	JwtUtils jwtUtils;
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegisterRequest userRegisterRequest ) throws InvalidActivityException {
@@ -35,19 +47,27 @@ public class AuthenticationController {
 	}
 	
 	@GetMapping("/login")
-	public ResponseEntity<?> loginUser(Authentication authentication){
-		if(null == authentication) {
-			return new ResponseEntity<>("oh No!!",HttpStatus.BAD_REQUEST);
-		}
-		return ResponseEntity.ok(authentication.getName());
+	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) throws InvalidActivityException{
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword()));
+		
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		String jwt = jwtUtils.generateJwtToken(authentication);
+		
+		User user = authenticationService.getUserDetails(loginRequest.getLoginId());
+		
+		return ResponseEntity.ok(LoginResponse.builder().jwtToken(jwt).user(user).build());
 	}
 	
 	@GetMapping("/{loginId}/forgot")
-	public ResponseEntity<?> forgotPassword(Authentication authentication, @PathVariable String loginId, @RequestBody ForgotPasswordRequest forgotPasswordRequest){
+	public ResponseEntity<?> forgotPassword(Authentication authentication, @PathVariable String loginId, @RequestBody ForgotPasswordRequest forgotPasswordRequest) throws InvalidActivityException{
 		
 		forgotPasswordRequest.setLoginId(loginId);
 		
-		return ResponseEntity.ok(authentication.getName());
+		User user = authenticationService.changePassword(forgotPasswordRequest);
+		
+		return ResponseEntity.ok(user);
 	}
 	
 }
