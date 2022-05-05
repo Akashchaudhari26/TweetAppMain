@@ -1,7 +1,9 @@
 package com.tweetapp.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.activity.InvalidActivityException;
 
@@ -52,7 +54,7 @@ public class TweetService {
 			throw new IllegalArgumentException("Invalid Tweet Id");
 		}
 		Tweet tweet = optionalTweet.get();
-		if(!tweet.getLoginId().equals(loginId)) {
+		if (!tweet.getLoginId().equals(loginId)) {
 			throw new InvalidActivityException("you connot perform this action");
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
@@ -66,15 +68,16 @@ public class TweetService {
 			throw new IllegalArgumentException("Invalid Tweet Id");
 		}
 		Tweet tweet = optionalTweet.get();
-		if(!tweet.getLoginId().equals(tweetRequest.getLoginId())) {
+		if (!tweet.getLoginId().equals(tweetRequest.getLoginId())) {
 			throw new InvalidActivityException("you connot perform this action");
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
-		tweetRequest.setTweetId(tweetId);
-		Tweet updatedTweet = Tweet.buildTweet(tweetRequest);
-		tweetRepository.save(updatedTweet);
-		log.info("successfull updated the Tweet: {}", optionalTweet.get());
-		return updatedTweet;
+		tweet.setMessage(tweetRequest.getMessage());
+		tweet.setTags(Arrays.asList(tweetRequest.getTags().split("#")).stream().filter(tag -> !tag.isEmpty())
+				.collect(Collectors.toList()));
+		tweetRepository.save(tweet);
+		log.info("successfull updated the Tweet: {}", tweet);
+		return tweet;
 	}
 
 	public void toggleTweetLike(String tweetId, String loginId) {
