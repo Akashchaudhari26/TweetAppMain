@@ -3,13 +3,13 @@ package com.tweetapp.security.jwt;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-import javax.activity.InvalidActivityException;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import com.tweetapp.exception.InvalidOperationException;
 import com.tweetapp.security.service.UserDetailsImp;
 
 import io.jsonwebtoken.Claims;
@@ -50,14 +50,14 @@ public class JwtUtils {
 
 	}
 
-	public boolean validateJwtToken(String authToken) throws InvalidActivityException {
+	public boolean validateJwtToken(String authToken) throws InvalidOperationException {
 		try {
 			SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
 			return true;
 		} catch (Exception e) {
 			log.info("Invalid token");
-			throw new InvalidActivityException("Invalid Token: "+e.getMessage());
+			throw new InvalidOperationException("Invalid Token: "+e.getMessage());
 		}
 	}
 }
