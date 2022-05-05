@@ -3,6 +3,8 @@ package com.tweetapp.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.activity.InvalidActivityException;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import com.tweetapp.model.Like;
 import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.repository.TweetRepository;
+import com.tweetapp.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +28,9 @@ public class TweetService {
 
 	@Autowired
 	TweetRepository tweetRepository;
+
+	@Autowired
+	UserRepository userRepository;
 
 	@Autowired
 	ObjectMapper objectMapper;
@@ -40,26 +46,35 @@ public class TweetService {
 		log.info("{} Tweet is saved to database", savedTweet);
 	}
 
-	public void deleteTweet(String tweetId) {
+	public void deleteTweet(String tweetId) throws InvalidActivityException {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
 		if (!optionalTweet.isPresent()) {
 			throw new IllegalArgumentException("Invalid Tweet Id");
 		}
+		Tweet tweet = optionalTweet.get();
+		if(!tweet.getLoginId().equals(tweetId)) {
+			throw new InvalidActivityException("you connot perform this action");
+		}
+		
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
-		tweetRepository.delete(optionalTweet.get());
+		tweetRepository.delete(tweet);
 		log.info("successfull deleted the Tweet: {}", optionalTweet.get());
 	}
 
-	public Tweet updateTweet(TweetRequest tweetRequest, String tweetId) {
+	public Tweet updateTweet(TweetRequest tweetRequest, String tweetId) throws InvalidActivityException {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
 		if (!optionalTweet.isPresent()) {
 			throw new IllegalArgumentException("Invalid Tweet Id");
+		}
+		Tweet tweet = optionalTweet.get();
+		if(!tweet.getLoginId().equals(tweetId)) {
+			throw new InvalidActivityException("you connot perform this action");
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		tweetRequest.setTweetId(tweetId);
 		Tweet updatedTweet = Tweet.buildTweet(tweetRequest);
 		tweetRepository.save(updatedTweet);
-		log.info("successfull deleted the Tweet: {}", optionalTweet.get());
+		log.info("successfull updated the Tweet: {}", optionalTweet.get());
 		return updatedTweet;
 	}
 

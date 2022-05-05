@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
@@ -21,7 +22,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Document
-public class Tweet {
+@EqualsAndHashCode(callSuper = false)
+public class Tweet extends AudtitingDetails {
 	@Id
 	private String id;
 	private String loginId;

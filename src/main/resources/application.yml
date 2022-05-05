@@ -3,6 +3,17 @@ spring:
     active: local
 server:
   port: 8080
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            FilterChainProxy: DEBUG
+tweet:
+  app:
+    jwtSecret: dokfdsjgfdslkgjfdkkgewiukhjsdkjhf
+    jwtExpirationMs: 300000
 ---
 spring:
   config:

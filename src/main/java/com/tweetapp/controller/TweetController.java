@@ -1,11 +1,16 @@
 package com.tweetapp.controller;
 
+import java.util.List;
+
+import javax.activity.InvalidActivityException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,9 +35,12 @@ public class TweetController {
 	TweetService tweetService;
 
 	@PostMapping("/{loginId}/add")
-	public ResponseEntity<TweetRequest> postNewTweet(@PathVariable String loginId,
+	public ResponseEntity<TweetRequest> postNewTweet(Authentication authentication,@PathVariable String loginId,
 			@RequestBody @Valid TweetRequest tweetRequest) throws Exception {
-
+		if(!authentication.getName().equals(loginId)) {
+			throw new InvalidActivityException("you cannot perform this action!!");
+		}
+		
 		tweetRequest.setLoginId(loginId);
 
 		TweetRequest tweet = tweetProducer.sendNewTweet(tweetRequest);
@@ -41,7 +49,11 @@ public class TweetController {
 	}
 
 	@DeleteMapping("/{loginId}/delete/{tweetId}")
-	public ResponseEntity<?> deleteTweet(@PathVariable String loginId, @PathVariable String tweetId) {
+	public ResponseEntity<?> deleteTweet(Authentication authentication,@PathVariable String loginId, @PathVariable String tweetId) throws InvalidActivityException {
+		
+		if(!authentication.getName().equals(loginId)) {
+			throw new InvalidActivityException("you cannot perform this action!!");
+		}
 
 		tweetService.deleteTweet(tweetId);
 
@@ -49,9 +61,13 @@ public class TweetController {
 	}
 
 	@PutMapping("/{loginId}/update/{tweetId}")
-	public ResponseEntity<?> updateTweet(@PathVariable String loginId, @PathVariable String tweetId,
-			@RequestBody @Valid TweetRequest tweetRequest) {
+	public ResponseEntity<?> updateTweet(Authentication authentication, @PathVariable String loginId, @PathVariable String tweetId,
+			@RequestBody @Valid TweetRequest tweetRequest) throws InvalidActivityException {
 
+		if(!authentication.getName().equals(loginId)) {
+			throw new InvalidActivityException("you cannot perform this action!!");
+		}
+		
 		tweetRequest.setLoginId(loginId);
 
 		Tweet updatedTweet = tweetService.updateTweet(tweetRequest, tweetId);
@@ -72,5 +88,11 @@ public class TweetController {
 		tweetReplyRequest.setTweetId(tweetId);
 		Tweet tweet = tweetService.replyTweet(tweetReplyRequest);
 		return new ResponseEntity<>(tweet, HttpStatus.OK);
+	}
+
+	@GetMapping("/all")
+	public ResponseEntity<List<Tweet>> getAllTweets() {
+		
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
