@@ -55,7 +55,7 @@ public class TweetController {
 			throw new InvalidActivityException("you cannot perform this action!!");
 		}
 
-		tweetService.deleteTweet(tweetId);
+		tweetService.deleteTweet(tweetId,loginId);
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

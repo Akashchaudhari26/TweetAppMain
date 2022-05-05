@@ -46,16 +46,15 @@ public class TweetService {
 		log.info("{} Tweet is saved to database", savedTweet);
 	}
 
-	public void deleteTweet(String tweetId) throws InvalidActivityException {
+	public void deleteTweet(String tweetId, String loginId) throws InvalidActivityException {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
 		if (!optionalTweet.isPresent()) {
 			throw new IllegalArgumentException("Invalid Tweet Id");
 		}
 		Tweet tweet = optionalTweet.get();
-		if(!tweet.getLoginId().equals(tweetId)) {
+		if(!tweet.getLoginId().equals(loginId)) {
 			throw new InvalidActivityException("you connot perform this action");
 		}
-		
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		tweetRepository.delete(tweet);
 		log.info("successfull deleted the Tweet: {}", optionalTweet.get());
@@ -67,7 +66,7 @@ public class TweetService {
 			throw new IllegalArgumentException("Invalid Tweet Id");
 		}
 		Tweet tweet = optionalTweet.get();
-		if(!tweet.getLoginId().equals(tweetId)) {
+		if(!tweet.getLoginId().equals(tweetRequest.getLoginId())) {
 			throw new InvalidActivityException("you connot perform this action");
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
