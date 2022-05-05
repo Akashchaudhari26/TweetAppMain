@@ -32,7 +32,7 @@ public class JwtUtils {
 		UserDetailsImp userPrincipal = (UserDetailsImp) authentication.getPrincipal();
 
 		SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-		String jwt = Jwts.builder().setIssuer("Yogesh").setSubject("Jwt Token")
+		String jwt = Jwts.builder().setIssuer("Tweet App").setSubject("Login Token")
 				.claim("username", userPrincipal.getUsername()).setIssuedAt(new Date())
 				.setExpiration(new Date(new Date().getTime() + jwtExpirationMs)).signWith(key).compact();
 

@@ -45,11 +45,16 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 		        SecurityContextHolder.getContext().setAuthentication(authentication);
 		      }
 		    } catch (Exception e) {
-		      logger.error("Cannot set user authentication: {}", e);
+		      log.error("Cannot set user authentication: {}", e);
 		    }
 
 		    filterChain.doFilter(request, response);
 		
+	}
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		String path = request.getServletPath();
+		return path.contains("/register") || path.contains("/login") || path.contains("/forgot");
 	}
 	
 	private String parseJwt(HttpServletRequest request) {
