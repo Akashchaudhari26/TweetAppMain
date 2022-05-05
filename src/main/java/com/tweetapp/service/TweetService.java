@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.activity.InvalidActivityException;
-
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tweetapp.domain.TweetReplyRequest;
 import com.tweetapp.domain.TweetRequest;
+import com.tweetapp.exception.InvalidOperationException;
 import com.tweetapp.model.Like;
 import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
@@ -48,28 +47,28 @@ public class TweetService {
 		log.info("{} Tweet is saved to database", savedTweet);
 	}
 
-	public void deleteTweet(String tweetId, String loginId) throws InvalidActivityException {
+	public void deleteTweet(String tweetId, String loginId) throws InvalidOperationException {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
 		if (!optionalTweet.isPresent()) {
-			throw new IllegalArgumentException("Invalid Tweet Id");
+			throw new InvalidOperationException("Invalid Tweet Id");
 		}
 		Tweet tweet = optionalTweet.get();
 		if (!tweet.getLoginId().equals(loginId)) {
-			throw new InvalidActivityException("you connot perform this action");
+			throw new InvalidOperationException("you connot perform this action");
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		tweetRepository.delete(tweet);
 		log.info("successfull deleted the Tweet: {}", optionalTweet.get());
 	}
 
-	public Tweet updateTweet(TweetRequest tweetRequest, String tweetId) throws InvalidActivityException {
+	public Tweet updateTweet(TweetRequest tweetRequest, String tweetId) throws InvalidOperationException {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
 		if (!optionalTweet.isPresent()) {
 			throw new IllegalArgumentException("Invalid Tweet Id");
 		}
 		Tweet tweet = optionalTweet.get();
 		if (!tweet.getLoginId().equals(tweetRequest.getLoginId())) {
-			throw new InvalidActivityException("you connot perform this action");
+			throw new InvalidOperationException("you connot perform this action");
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		tweet.setMessage(tweetRequest.getMessage());
