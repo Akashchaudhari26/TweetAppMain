@@ -29,7 +29,7 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (null != authentication) {
 			SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
-			String jwt = Jwts.builder().setIssuer("Yogesh").setSubject("Jwt Token")
+			String jwt = Jwts.builder().setIssuer("Tweet App").setSubject("Jwt Token")
 					.claim("username", authentication.getName())
 					.setIssuedAt(new Date())
 					.setExpiration(new Date(new Date().getTime() + 3000000))
@@ -43,6 +43,6 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		log.info(request.getServletPath());
-		return !request.getServletPath().contains("/test");
+		return !request.getServletPath().contains("/login");
 	}
 }

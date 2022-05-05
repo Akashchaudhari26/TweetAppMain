@@ -29,7 +29,6 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		String jwt = request.getHeader(SecurityConstants.JWT_HEADER);
-		log.info("In Jwt Token Validation");
 		if (null != jwt) {
 			try {
 				SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
@@ -40,10 +39,11 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
 				Authentication authentication = new UsernamePasswordAuthenticationToken(username, null);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-				log.info(username);
+				
+				log.info("Jwt Token Validation Successfull");
 
 			} catch (Exception e) {
-				throw new BadCredentialsException("Invalid Token received");
+				throw new BadCredentialsException("Invalid Token received "+ e);
 			}
 
 		}
@@ -52,6 +52,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		return request.getServletPath().contains("/test");
+		return request.getServletPath().contains("/login") || request.getServletPath().contains("/register")
+				|| request.getServletPath().contains("/forgot");
 	}
 }
