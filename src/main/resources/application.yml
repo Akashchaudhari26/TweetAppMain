@@ -13,7 +13,7 @@ logging:
 tweet:
   app:
     jwtSecret: dokfdsjgfdslkgjfdkkgewiukhjsdkjhf
-    jwtExpirationMs: 300000
+    jwtExpirationMs: 7200000
 ---
 spring:
   config:
