@@ -115,4 +115,13 @@ public class TweetService {
 		return tweet;
 	}
 
+	public List<Tweet> getAllTweets() {
+		List<Tweet> tweetlist = tweetRepository.findAll();
+		if (tweetlist.size() == 0) {
+			log.info("There are no tweets to retrieve");
+			return tweetlist;
+		}
+		log.info(tweetlist.size() + " tweets successfully retrieved");
+		return tweetlist;
+	}
 }

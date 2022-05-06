@@ -92,7 +92,7 @@ public class TweetController {
 
 	@GetMapping("/all")
 	public ResponseEntity<List<Tweet>> getAllTweets() {
-		
-		return new ResponseEntity<>(HttpStatus.OK);
+		List<Tweet> tweets = tweetService.getAllTweets();
+		return new ResponseEntity<>(tweets, HttpStatus.OK);
 	}
 }
