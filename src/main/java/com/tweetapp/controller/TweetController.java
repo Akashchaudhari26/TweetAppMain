@@ -96,7 +96,7 @@ public class TweetController {
 		return new ResponseEntity<>(tweets, HttpStatus.OK);
 	}
 	@GetMapping("/{loginId}")
-	public ResponseEntity<List<Tweet>> getAllTweetsOfUser(@PathVariable String loginId) {
+	public ResponseEntity<List<Tweet>> getAllTweetsOfUser(@PathVariable String loginId) throws InvalidOperationException {
 		List<Tweet> tweets = tweetService.getAllTweetsOfUser(loginId);
 		return new ResponseEntity<>(tweets, HttpStatus.OK);
 	}
