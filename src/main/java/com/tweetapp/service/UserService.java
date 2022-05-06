@@ -27,7 +27,7 @@ public class UserService {
 		return users;
 	}
 	public List<User> getAllUsersByLoginId(String loginIdPattern) {
-		List<User> users = userRepository.searchByLoginId(loginIdPattern);
+		List<User> users = userRepository.findByLoginIdLike(loginIdPattern);
 		if (users.size() == 0) {
 			log.info("There are no users to retrieve");
 			return users;

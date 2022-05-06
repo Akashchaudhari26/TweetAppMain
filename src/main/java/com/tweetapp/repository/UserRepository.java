@@ -2,7 +2,6 @@ package com.tweetapp.repository;
 
 import java.util.List;
 
-import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,7 +17,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 
 	public List<User> findByEmail(String email);
 
-	@Query("{'$match': { 'loginId' { $regex:  ?0 } }}" )
-	public List<User> searchByLoginId(String loginIdPattern);
+	public List<User> findByLoginIdLike(String loginIdPattern);
 
 }
