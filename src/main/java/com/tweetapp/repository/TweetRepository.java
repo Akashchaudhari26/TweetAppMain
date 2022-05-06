@@ -12,4 +12,10 @@ import com.tweetapp.model.Tweet;
 public interface TweetRepository extends MongoRepository<Tweet, String> {
 	@Aggregation(pipeline = { "{'$sort': {'lastModifiedDate': -1}}" })
 	public List<Tweet> findAll();
+	
+	@Aggregation(pipeline ={
+		    "{'$match': { 'loginId' : { $regex: ?0 } }}",
+		    "{'$sort': {'lastModifiedDate': -1}}"
+		  })
+	public List<Tweet> findByLoginId(String loginId);
 }

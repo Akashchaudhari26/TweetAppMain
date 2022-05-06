@@ -95,4 +95,10 @@ public class TweetController {
 		List<Tweet> tweets = tweetService.getAllTweets();
 		return new ResponseEntity<>(tweets, HttpStatus.OK);
 	}
+	@GetMapping("/{loginId}")
+	public ResponseEntity<List<Tweet>> getAllTweetsOfUser(@PathVariable String loginId) {
+		List<Tweet> tweets = tweetService.getAllTweetsOfUser(loginId);
+		return new ResponseEntity<>(tweets, HttpStatus.OK);
+	}
+	
 }

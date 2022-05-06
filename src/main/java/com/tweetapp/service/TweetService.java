@@ -124,4 +124,13 @@ public class TweetService {
 		log.info(tweetlist.size() + " tweets successfully retrieved");
 		return tweetlist;
 	}
+	public List<Tweet> getAllTweetsOfUser(String loginId) {
+		List<Tweet> tweetlist = tweetRepository.findByLoginId(loginId);
+		if (tweetlist.size() == 0) {
+			log.info("There are no tweets to retrieve");
+			return tweetlist;
+		}
+		log.info(tweetlist.size() + " tweets successfully retrieved");
+		return tweetlist;
+	}
 }
