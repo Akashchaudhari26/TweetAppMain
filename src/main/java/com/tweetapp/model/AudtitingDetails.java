@@ -11,7 +11,4 @@ import lombok.Data;
 public abstract class AudtitingDetails {
 	@LastModifiedDate
     private Date lastModifiedDate;
-
-    @LastModifiedBy
-    private String lastModifiedUserId;
 }
