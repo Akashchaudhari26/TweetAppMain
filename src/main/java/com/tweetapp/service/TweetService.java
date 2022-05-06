@@ -124,7 +124,12 @@ public class TweetService {
 		log.info(tweetlist.size() + " tweets successfully retrieved");
 		return tweetlist;
 	}
-	public List<Tweet> getAllTweetsOfUser(String loginId) {
+	public List<Tweet> getAllTweetsOfUser(String loginId) throws InvalidOperationException {
+		boolean user = userRepository.existsByLoginId(loginId);
+		if(!user) {
+			throw new InvalidOperationException("User don't exits!!");
+		}
+		
 		List<Tweet> tweetlist = tweetRepository.findByLoginId(loginId);
 		if (tweetlist.size() == 0) {
 			log.info("There are no tweets to retrieve");

@@ -23,15 +23,14 @@ public class AuthenticationService {
 
 	public User registerNewUser(UserRegisterRequest userRegisterRequest) throws InvalidOperationException {
 
-		List<User> findByLoginId = userRepository.findByLoginId(userRegisterRequest.getLoginId());
-		if (findByLoginId.size() > 0) {
+		boolean loginIdExists = userRepository.existsByLoginId(userRegisterRequest.getLoginId());
+		if (loginIdExists) {
 			throw new InvalidOperationException("Login Id already exists");
 		}
-		List<User> findByemail = userRepository.findByEmail(userRegisterRequest.getEmail());
-		if (findByemail.size() > 0) {
+		boolean emailExists = userRepository.existsByEmail(userRegisterRequest.getEmail());
+		if (emailExists) {
 			throw new InvalidOperationException("Email already exists");
 		}
-		
 
 		User newUser = User.buildUser(userRegisterRequest);
 		
