@@ -2,7 +2,6 @@ package com.tweetapp.model;
 
 import java.util.Date;
 
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import lombok.Data;
