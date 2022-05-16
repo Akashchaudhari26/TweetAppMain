@@ -60,7 +60,7 @@ public class AuthenticationController {
 	}
 	
 	@GetMapping("/{loginId}/forgot")
-	public ResponseEntity<?> forgotPassword(Authentication authentication, @PathVariable String loginId, @RequestBody ForgotPasswordRequest forgotPasswordRequest) throws InvalidOperationException{
+	public ResponseEntity<?> forgotPassword(Authentication authentication, @PathVariable String loginId,@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) throws InvalidOperationException{
 		
 		forgotPasswordRequest.setLoginId(loginId);
 		
