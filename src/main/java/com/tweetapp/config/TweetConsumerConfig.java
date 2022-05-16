@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.util.backoff.FixedBackOff;
 
 import lombok.extern.slf4j.Slf4j;
 
+@ConditionalOnProperty(value = "spring.kafka.enable", havingValue = "true", matchIfMissing = true)
 @Configuration
 @EnableKafka
 @Slf4j

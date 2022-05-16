@@ -6,11 +6,10 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -128,27 +127,6 @@ public class TestAuthenticationController {
 				.andExpect(status().is4xxClientError());
 	}
 	
-	@Test
-	public void testLogin_Valid() throws Exception {
-		LoginRequest loginRequest = LoginRequest.builder().loginId("test_user").password("Test@Password1").build();
-		
-		String valueAsString = objectMapper.writeValueAsString(loginRequest);
-		
-		when(authenticationService.getUserDetails(anyString()))
-		.thenReturn(
-				User.builder()
-				.firstName("Fname")
-				.lastName("ln")
-				.email("yo@gma.com")
-				.loginId("eed")
-				.build());
-		when(jwtUtils.generateJwtToken(any())).thenReturn("token");
-		mockMvc.perform(
-				get("/api/v1.0/tweets/login").content(valueAsString)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-		
-	}
 	
 	@Test
 	public void testLogin_InvalidLoginId() throws Exception {

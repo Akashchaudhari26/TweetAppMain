@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: unit-testing
 server:
   port: 8080
 logging:
@@ -37,11 +37,43 @@ spring:
     admin:
       properties:
         bootstrap.servers: localhost:9092,localhost:9093
+      enable: true
   data:
     mongodb:
       host: localhost
       port: 27017
       database: tweet-app 
+
+---
+spring:
+  config:
+    activate:
+      on-profile: unit-testing
+  kafka:
+    template:
+      default-topic: new-tweet
+    consumer:
+      bootstrap-servers: localhost:9092,localhost:9093
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: new-tweet-listener-group
+    producer:
+      bootstrap-servers: localhost:9092,localhost:9093
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        acks: all
+        retries: 10
+    admin:
+      properties:
+        bootstrap.servers: localhost:9092,localhost:9093
+    enable: false
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: tweet-app 
+
          
 ---
 spring:
