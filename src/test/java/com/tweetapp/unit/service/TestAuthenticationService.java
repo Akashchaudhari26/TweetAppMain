@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.isA;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,7 @@ public class TestAuthenticationService {
 	@Mock
 	UserRepository userRepository;
 	
-	@Autowired
+	@InjectMocks
 	AuthenticationService authenticationService;
 	
 	@Test
@@ -49,7 +50,7 @@ public class TestAuthenticationService {
 		
 		// when
 		when(userRepository.existsByLoginId(anyString())).thenReturn(false);
-		when(userRepository.existsByEmail(anyString())).thenReturn(false);
+		when(userRepository.existsByEmail(anyString())).thenReturn(true);
 		
 		// then
 		Exception ex = assertThrows(InvalidOperationException.class, ()->{
