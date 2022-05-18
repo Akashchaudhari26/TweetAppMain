@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -137,5 +139,10 @@ public class TweetService {
 		}
 		log.info(tweetlist.size() + " tweets successfully retrieved");
 		return tweetlist;
+	}
+
+	public Tweet saveTweet(@Valid TweetRequest tweetRequest) {
+		Tweet tweet = Tweet.buildTweet(tweetRequest);
+		return tweetRepository.save(tweet);
 	}
 }
