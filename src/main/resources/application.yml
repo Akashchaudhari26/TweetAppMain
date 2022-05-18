@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: unit-testing
+    active: local-without-kafka
 server:
   port: 8080
 logging:
@@ -18,7 +18,7 @@ tweet:
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: local-with-kafka
   kafka:
     template:
       default-topic: new-tweet
@@ -48,7 +48,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: unit-testing
+      on-profile: local-without-kafka
   kafka:
     enable: false
   data:
