@@ -1,4 +1,4 @@
-package com.tweetapp.unit.service;
+package com.tweetapp.service;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
