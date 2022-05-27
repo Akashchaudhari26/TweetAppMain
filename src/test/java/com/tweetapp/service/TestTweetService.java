@@ -187,8 +187,8 @@ public class TestTweetService {
 	@Test
 	void replyTweet_InvalidTweetId() {
 
-		TweetReplyRequest tweetReplyRequest = TweetReplyRequest.builder().tweetId("tweetId").loginId("someother").message("some reply")
-				.build();
+		TweetReplyRequest tweetReplyRequest = TweetReplyRequest.builder().tweetId("tweetId").loginId("someother")
+				.message("some reply").build();
 
 		Tweet tweet = Tweet.builder().loginId("some").build();
 		Optional<Tweet> optional = Optional.ofNullable(null);
@@ -206,9 +206,9 @@ public class TestTweetService {
 
 	@Test
 	void replyTweet_ValidCase() {
-		TweetReplyRequest tweetReplyRequest = TweetReplyRequest.builder().tweetId("tweetId").loginId("some").message("some reply")
-				.build();
-		
+		TweetReplyRequest tweetReplyRequest = TweetReplyRequest.builder().tweetId("tweetId").loginId("some")
+				.message("some reply").build();
+
 		ArrayList<Reply> reply = new ArrayList<>();
 		reply.add(Reply.builder().userLoginId("").message("somemessage").build());
 
@@ -216,80 +216,76 @@ public class TestTweetService {
 		Optional<Tweet> optional = Optional.ofNullable(tweet);
 		System.out.println(optional.isPresent());
 		when(tweetRepository.findById(anyString())).thenReturn(optional);
-		
+
 		Reply expectedReply = Reply.buildReply(tweetReplyRequest);
-		
+
 		Tweet replyTweet = tweetService.replyTweet(tweetReplyRequest);
 
 		verify(tweetRepository, times(1)).save(tweet);
 
 		assertTrue(replyTweet.getReplies().contains(expectedReply));
-		
+
 	}
 
 	@Test
 	void getAllTweets_Tweets() {
 		Tweet tweet1 = Tweet.builder().id("id1").loginId("loginId1").message("message1").build();
 		Tweet tweet2 = Tweet.builder().id("id2").loginId("loginId2").message("message2").build();
-		
-		when(tweetRepository.findAll()).thenReturn(Arrays.asList(tweet1,tweet2));
-		
+
+		when(tweetRepository.findAll()).thenReturn(Arrays.asList(tweet1, tweet2));
+
 		List<Tweet> tweets = tweetService.getAllTweets();
-		
+
 		assertEquals(2, tweets.size());
-		
+
 	}
-	
-	
+
 	@Test
 	void getAllTweets_ZeroTweets() {
-		
+
 		when(tweetRepository.findAll()).thenReturn(Arrays.asList());
-		
+
 		List<Tweet> tweets = tweetService.getAllTweets();
-		
+
 		assertEquals(0, tweets.size());
-		
+
 	}
-	
+
 	@Test
 	void getAllTweetsOfUser_InvalidLoginId() {
-		
+
 		when(userRepository.existsByLoginId(anyString())).thenReturn(false);
-		
-		assertThrows(InvalidOperationException.class, ()->{			
+
+		assertThrows(InvalidOperationException.class, () -> {
 			tweetService.getAllTweetsOfUser("someuser");
 		});
-		
-		
+
 	}
-	
-	
+
 	@Test
 	void getAllTweetsOfUser_ZeroTweets() throws InvalidOperationException {
-		
+
 		when(userRepository.existsByLoginId(anyString())).thenReturn(true);
 		when(tweetRepository.findAll()).thenReturn(Arrays.asList());
-		
+
 		List<Tweet> tweets = tweetService.getAllTweetsOfUser("");
-		
+
 		assertEquals(0, tweets.size());
-		
+
 	}
-	
+
 	@Test
 	void getAllTweetsOfUser_Tweets() throws InvalidOperationException {
-		
+
 		Tweet tweet1 = Tweet.builder().id("id1").loginId("loginId").message("message1").build();
 		Tweet tweet2 = Tweet.builder().id("id2").loginId("loginId").message("message2").build();
-		
-		
+
 		when(userRepository.existsByLoginId(anyString())).thenReturn(true);
-		when(tweetRepository.findByLoginId(anyString())).thenReturn(Arrays.asList(tweet1,tweet2));
-		
+		when(tweetRepository.findByLoginId(anyString())).thenReturn(Arrays.asList(tweet1, tweet2));
+
 		List<Tweet> tweets = tweetService.getAllTweetsOfUser("loginId");
-		
+
 		assertEquals(2, tweets.size());
-		
+
 	}
 }
