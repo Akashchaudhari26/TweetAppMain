@@ -67,7 +67,7 @@ public class TestTweetController {
 	private User testUser = null;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("test").lastName("testing")
 				.email("test@ing.com").loginId("test_user").password(passeordEncoder.encode("Test@Password1")).build();
@@ -104,7 +104,7 @@ public class TestTweetController {
 	}
 
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		token = "";
 		testTweetId = "";
 		if (testUser != null)
@@ -112,7 +112,32 @@ public class TestTweetController {
 	}
 
 	@Test
-	public void testUpdateTweet_ValidCase() throws Exception {
+	void testUpdateTweet_InvalidCase() throws Exception {
+
+		// given
+		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
+		String json = objectMapper.writeValueAsString(tweetRequest);
+
+		// when
+		Tweet updatedTweet = Tweet.buildTweet(tweetRequest);
+
+		when(tweetService.updateTweet(isA(TweetRequest.class), anyString())).thenReturn(updatedTweet);
+
+		MvcResult mvcResult = mockMvc.perform(put("/api/v1.0/tweets/test_user2/update/" + testTweetId)
+				.header("Authorization", "Bearer " + token).content(json).contentType(MediaType.APPLICATION_JSON))
+				.andReturn();
+
+		String contentAsString = mvcResult.getResponse().getContentAsString();
+
+		String expectedOutput = "you cannot perform this action!!";
+		
+		// then
+		assertEquals(expectedOutput, contentAsString);
+
+	}
+	
+	@Test
+	void testUpdateTweet_ValidCase() throws Exception {
 
 		// given
 		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
@@ -138,7 +163,7 @@ public class TestTweetController {
 	}
 
 	@Test
-	public void testPostTweet_InValidMessage() throws Exception {
+	void testPostTweet_InValidMessage() throws Exception {
 
 		TweetRequest tweetRequest = TweetRequest.builder().message("").tags("").build();
 		String json = objectMapper.writeValueAsString(tweetRequest);
@@ -153,7 +178,7 @@ public class TestTweetController {
 	}
 
 	@Test
-	public void testDeleteTweet_ValidCase() throws Exception {
+	void testDeleteTweet_ValidCase() throws Exception {
 
 		doNothing().when(tweetService).deleteTweet(anyString(), anyString());
 
@@ -162,9 +187,51 @@ public class TestTweetController {
 				.andExpect(status().isOk());
 
 	}
+	
+	@Test
+	void testDeleteTweet_InvalidCase1() throws Exception {
+
+		doNothing().when(tweetService).deleteTweet(anyString(), anyString());
+
+		mockMvc.perform(delete("/api/v1.0/tweets/test_user2/delete/" + testTweetId)
+				.header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError());
+
+	}
+	
+	@Test
+	void testPostTweet_InvalidCase() throws Exception {
+		
+		TweetRequest tweetRequest = TweetRequest.builder().message("test message").tags("").build();
+		String json = objectMapper.writeValueAsString(tweetRequest);
+		
+		
+		when(tweetService.saveTweet(isA(TweetRequest.class))).thenReturn(null);
+		
+		String expectedContent = "you cannot perform this action!!";
+		
+		mockMvc.perform(post("/api/v1.0/tweets/test_user1/post/")
+				.header("Authorization", "Bearer " + token).content(json).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError()).andExpect(content().string(expectedContent));
+		
+	}
+	
+	@Test
+	void testPostTweet_ValidCase() throws Exception {
+		
+		TweetRequest tweetRequest = TweetRequest.builder().message("test message").tags("").build();
+		String json = objectMapper.writeValueAsString(tweetRequest);
+		
+		when(tweetService.saveTweet(isA(TweetRequest.class))).thenReturn(Tweet.buildTweet(tweetRequest));
+		
+		mockMvc.perform(post("/api/v1.0/tweets/test_user/post/")
+				.header("Authorization", "Bearer " + token).content(json).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful());
+		
+	}
 
 	@Test
-	public void testDeleteTweet_InValidCase() throws Exception {
+	void testDeleteTweet_InValidCase() throws Exception {
 
 		doThrow(new InvalidOperationException("Tweet id not found")).when(tweetService).deleteTweet(anyString(),
 				anyString());
@@ -177,7 +244,7 @@ public class TestTweetController {
 	}
 
 	@Test
-	public void testLikeTweet() throws Exception {
+	void testLikeTweet() throws Exception {
 
 		doNothing().when(tweetService).toggleTweetLike(testTweetId, "tweetApp");
 
@@ -188,7 +255,7 @@ public class TestTweetController {
 	}
 
 	@Test
-	public void testReplyTweet() throws Exception {
+	void testReplyTweet() throws Exception {
 
 		// given
 		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
@@ -216,7 +283,7 @@ public class TestTweetController {
 	}
 
 	@Test
-	public void testGetAllTweets() throws Exception {
+	void testGetAllTweets() throws Exception {
 
 		int expectedCount = 1;
 		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
@@ -234,9 +301,10 @@ public class TestTweetController {
 		assertEquals(expectedCount, list.size());
 
 	}
+	
 
 	@Test
-	public void testGetAllTweetsOfUser() throws Exception {
+	void testGetAllTweetsOfUser() throws Exception {
 
 		int expectedCount = 1;
 		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
