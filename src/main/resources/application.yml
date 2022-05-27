@@ -10,6 +10,11 @@ logging:
         security:
           web:
             FilterChainProxy: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 tweet:
   app:
     jwtSecret: dokfdsjgfdslkgjfdkkgewiukhjsdkjhf
@@ -86,7 +91,3 @@ spring:
       host: dev
       port: 27017
       database: tweet-app 
-
-management:
-  security:
-    enabled: false

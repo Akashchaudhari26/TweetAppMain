@@ -49,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/api/v1.0/tweets/login").permitAll().antMatchers("/api/v1.0/tweets/register").permitAll()
 				.antMatchers("/api/v1.0/tweets/{loginId:^[A-Za-z0-9_]+$}/forgot").permitAll()
+				.antMatchers("/actuator/**").permitAll()
 				.anyRequest().authenticated();
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
