@@ -33,7 +33,7 @@ public class TestAuthenticationService {
 	AuthenticationService authenticationService;
 
 	@Test
-	public void testRegisterNewUser_InvalidLoginId() {
+	void testRegisterNewUser_InvalidLoginId() {
 		// given
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("fname").lastName("la")
 				.email("som@email.com").loginId("some_1").password("Pass@word1").build();
@@ -51,7 +51,7 @@ public class TestAuthenticationService {
 	}
 
 	@Test
-	public void testRegisterNewUser_InvalidEmail() {
+	void testRegisterNewUser_InvalidEmail() {
 		// given
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("fname").lastName("la")
 				.email("som@email.com").loginId("some_1").password("Pass@word1").build();
@@ -70,7 +70,7 @@ public class TestAuthenticationService {
 	}
 
 	@Test
-	public void testRegisterNewUser_ValidCase() throws InvalidOperationException {
+	void testRegisterNewUser_ValidCase() throws InvalidOperationException {
 		// given
 		User expectedUser = User.builder().firstName("fname").lastName("la").email("som@email.com").loginId("some_1")
 				.password("Pass@word1").phoneNumber("").build();
@@ -91,7 +91,7 @@ public class TestAuthenticationService {
 	}
 
 	@Test
-	public void testGetUserDetails_UserExists() {
+	void testGetUserDetails_UserExists() {
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("fname").lastName("la")
 				.email("som@email.com").loginId("some_1").password("Pass@word1").build();
 		when(userRepository.findByLoginId(anyString())).thenReturn(Arrays.asList());
@@ -106,7 +106,7 @@ public class TestAuthenticationService {
 	}
 
 	@Test
-	public void testGetUserDetails_UserDetails() throws InvalidOperationException {
+	void testGetUserDetails_UserDetails() throws InvalidOperationException {
 		User expectedUser = User.builder().firstName("fname").lastName("la").email("som@email.com").loginId("some_1")
 				.password("Pass@word1").phoneNumber("").build();
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("fname").lastName("la")
@@ -120,7 +120,7 @@ public class TestAuthenticationService {
 	}
 
 	@Test
-	public void testChangePassword_UserExists() {
+	void testChangePassword_UserExists() {
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("fname").lastName("la")
 				.email("som@email.com").loginId("some_1").password("Pass@word1").build();
 		when(userRepository.findByLoginId(anyString())).thenReturn(Arrays.asList());
@@ -134,7 +134,7 @@ public class TestAuthenticationService {
 	}
 
 	@Test
-	public void testChangePassword_ChangePassword() throws InvalidOperationException {
+	void testChangePassword_ChangePassword() throws InvalidOperationException {
 
 		// given
 		User updatedUser = User.builder().firstName("fname").lastName("la").email("som@email.com").loginId("Akki")

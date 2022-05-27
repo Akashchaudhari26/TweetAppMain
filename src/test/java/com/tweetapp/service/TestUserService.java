@@ -24,7 +24,7 @@ public class TestUserService {
 	UserService userService;
 
 	@Test
-	public void testGetAllUsers() {
+	void testGetAllUsers() {
 		User user1 = User.builder().firstName("fname").lastName("la").email("som@email.com").loginId("Akki")
 				.password("Password@123").build();
 		User user2 = User.builder().firstName("fname").lastName("la").email("som1@email.com").loginId("Akki1")
@@ -40,7 +40,7 @@ public class TestUserService {
 	}
 
 	@Test
-	public void testGetAllUsers_EmptyList() {
+	void testGetAllUsers_EmptyList() {
 
 		int expectedListSize = 0;
 
@@ -52,7 +52,7 @@ public class TestUserService {
 	}
 
 	@Test
-	public void testGetAllUsersByLoginId() {
+	void testGetAllUsersByLoginId() {
 		User user1 = User.builder().firstName("fname").lastName("la").email("som@email.com").loginId("Akki")
 				.password("Password@123").build();
 		User user2 = User.builder().firstName("fname").lastName("la").email("som1@email.com").loginId("Akki1")
@@ -68,7 +68,7 @@ public class TestUserService {
 	}
 
 	@Test
-	public void testGetAllUsersByLoginId_EmptyList() {
+	void testGetAllUsersByLoginId_EmptyList() {
 
 		int expectedListSize = 0;
 
