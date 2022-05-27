@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -24,8 +25,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tweetapp.domain.LoginRequest;
 import com.tweetapp.domain.LoginResponse;
+import com.tweetapp.domain.UserRegisterRequest;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.model.User;
+import com.tweetapp.repository.UserRepository;
 import com.tweetapp.service.UserService;
 
 @SpringBootTest
@@ -37,13 +40,37 @@ public class TestUserController {
 	@Autowired
 	ObjectMapper objectMapper;
 
+	@Autowired
+	UserRepository userRepository;
+
+	@Autowired
+	PasswordEncoder passeordEncoder;
+
 	private String token;
+
+	private User testUser = null;
 
 	@MockBean
 	UserService userService;
 
 	@BeforeEach
 	public void setUp() throws Exception {
+
+		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("test").lastName("testing")
+				.email("test@ing.com").loginId("test_user").password(passeordEncoder.encode("Test@Password1")).build();
+
+		testUser = User.buildUser(userRegisterRequest);
+
+		if (userRepository.existsByEmail(testUser.getEmail())) {
+			userRepository.delete(testUser);
+		}
+
+		if (userRepository.existsByLoginId(testUser.getLoginId())) {
+			userRepository.delete(testUser);
+		}
+
+		testUser = userRepository.save(testUser);
+
 		LoginRequest loginRequest = LoginRequest.builder().loginId("test_user").password("Test@Password1").build();
 		String json = objectMapper.writeValueAsString(loginRequest);
 
@@ -62,6 +89,8 @@ public class TestUserController {
 	@AfterEach
 	public void tearDown() {
 		token = "";
+		if (testUser != null)
+			userRepository.delete(testUser);
 	}
 
 	@Test
@@ -69,8 +98,8 @@ public class TestUserController {
 
 		int expectedCount = 1;
 
-		when(userService.getAllUsers())
-				.thenReturn(Arrays.asList(User.builder().firstName("test").lastName("e").email("e@test.io").loginId("test_1").build()));
+		when(userService.getAllUsers()).thenReturn(Arrays
+				.asList(User.builder().firstName("test").lastName("e").email("e@test.io").loginId("test_1").build()));
 
 		MvcResult mvcResult = mockMvc
 				.perform(get("/api/v1.0/tweets/users/all").header("Authorization", "Bearer " + token)).andReturn();
@@ -83,17 +112,18 @@ public class TestUserController {
 		assertEquals(expectedCount, list.size());
 
 	}
-	
+
 	@Test
 	public void testSearchByLoginId() throws Exception {
 
 		int expectedCount = 1;
 
-		when(userService.getAllUsersByLoginId(anyString()))
-				.thenReturn(Arrays.asList(User.builder().firstName("test").lastName("e").email("e@test.io").loginId("tedt_1").build()));
+		when(userService.getAllUsersByLoginId(anyString())).thenReturn(Arrays
+				.asList(User.builder().firstName("test").lastName("e").email("e@test.io").loginId("tedt_1").build()));
 
 		MvcResult mvcResult = mockMvc
-				.perform(get("/api/v1.0/tweets/user/search/test").header("Authorization", "Bearer " + token)).andReturn();
+				.perform(get("/api/v1.0/tweets/user/search/test").header("Authorization", "Bearer " + token))
+				.andReturn();
 
 		String contentAsString = mvcResult.getResponse().getContentAsString();
 
@@ -103,17 +133,17 @@ public class TestUserController {
 		assertEquals(expectedCount, list.size());
 
 	}
-	
+
 	@Test
 	public void testSearchByLoginId_EmptyList() throws Exception {
 
 		int expectedCount = 0;
 
-		when(userService.getAllUsersByLoginId(anyString()))
-				.thenReturn(Arrays.asList());
+		when(userService.getAllUsersByLoginId(anyString())).thenReturn(Arrays.asList());
 
 		MvcResult mvcResult = mockMvc
-				.perform(get("/api/v1.0/tweets/user/search/test23ee").header("Authorization", "Bearer " + token)).andReturn();
+				.perform(get("/api/v1.0/tweets/user/search/test23ee").header("Authorization", "Bearer " + token))
+				.andReturn();
 
 		String contentAsString = mvcResult.getResponse().getContentAsString();
 
@@ -123,24 +153,23 @@ public class TestUserController {
 		assertEquals(expectedCount, list.size());
 
 	}
-	
+
 	@Test
 	public void testSearchByLoginId_WithNoToken() throws Exception {
 
-		when(userService.getAllUsersByLoginId(anyString()))
-				.thenReturn(Arrays.asList(User.builder().firstName("test").lastName("e").email("e@test.io").loginId("tedt_1").build()));
-		
+		when(userService.getAllUsersByLoginId(anyString())).thenReturn(Arrays
+				.asList(User.builder().firstName("test").lastName("e").email("e@test.io").loginId("tedt_1").build()));
+
 		mockMvc.perform(get("/api/v1.0/tweets/user/search/test")).andExpectAll(status().is4xxClientError());
 
 	}
-	
+
 	@Test
 	public void testGetAllTweets_EmptyList() throws Exception {
 
 		int expectedCount = 0;
 
-		when(userService.getAllUsers())
-				.thenReturn(Arrays.asList());
+		when(userService.getAllUsers()).thenReturn(Arrays.asList());
 
 		MvcResult mvcResult = mockMvc
 				.perform(get("/api/v1.0/tweets/users/all").header("Authorization", "Bearer " + token)).andReturn();
