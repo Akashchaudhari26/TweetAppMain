@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,7 @@ public class TweetService {
 		}
 		Tweet tweet = optionalTweet.get();
 		if (!tweet.getLoginId().equals(loginId)) {
-			throw new InvalidOperationException("you connot perform this action");
+			throw new InvalidOperationException("you cannot perform this action");
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		tweetRepository.delete(tweet);
@@ -68,7 +70,7 @@ public class TweetService {
 		}
 		Tweet tweet = optionalTweet.get();
 		if (!tweet.getLoginId().equals(tweetRequest.getLoginId())) {
-			throw new InvalidOperationException("you connot perform this action");
+			throw new InvalidOperationException("you cannot perform this action");
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		tweet.setMessage(tweetRequest.getMessage());
@@ -124,6 +126,7 @@ public class TweetService {
 		log.info(tweetlist.size() + " tweets successfully retrieved");
 		return tweetlist;
 	}
+	
 	public List<Tweet> getAllTweetsOfUser(String loginId) throws InvalidOperationException {
 		boolean user = userRepository.existsByLoginId(loginId);
 		if(!user) {
@@ -137,5 +140,10 @@ public class TweetService {
 		}
 		log.info(tweetlist.size() + " tweets successfully retrieved");
 		return tweetlist;
+	}
+
+	public Tweet saveTweet(@Valid TweetRequest tweetRequest) {
+		Tweet tweet = Tweet.buildTweet(tweetRequest);
+		return tweetRepository.save(tweet);
 	}
 }

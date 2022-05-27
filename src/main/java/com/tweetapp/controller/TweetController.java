@@ -47,6 +47,20 @@ public class TweetController {
 
 		return new ResponseEntity<>(tweet, HttpStatus.CREATED);
 	}
+	
+	@PostMapping("/{loginId}/post")
+	public ResponseEntity<Tweet> postTweet(Authentication authentication,@PathVariable String loginId,
+			@RequestBody @Valid TweetRequest tweetRequest) throws Exception {
+		if(!authentication.getName().equals(loginId)) {
+			throw new InvalidOperationException("you cannot perform this action!!");
+		}
+		
+		tweetRequest.setLoginId(loginId);
+
+		Tweet tweet = tweetService.saveTweet(tweetRequest);
+
+		return new ResponseEntity<>(tweet, HttpStatus.CREATED);
+	}
 
 	@DeleteMapping("/{loginId}/delete/{tweetId}")
 	public ResponseEntity<?> deleteTweet(Authentication authentication,@PathVariable String loginId, @PathVariable String tweetId) throws InvalidOperationException {

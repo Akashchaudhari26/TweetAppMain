@@ -21,13 +21,13 @@ public class UserController {
 	UserService userService;
 	
 	@GetMapping("/users/all")
-	public ResponseEntity<List<User>> getAllTweets() {
-		List<User> tweets = userService.getAllUsers();
-		return new ResponseEntity<>(tweets, HttpStatus.OK);
+	public ResponseEntity<List<User>> getAllUsers() {
+		List<User> users = userService.getAllUsers();
+		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	@GetMapping("/user/search/{loginIdPattern}")
 	public ResponseEntity<List<User>> getAllUsersByLoginId(@PathVariable String loginIdPattern) {
-		List<User> tweets = userService.getAllUsersByLoginId(loginIdPattern);
-		return new ResponseEntity<>(tweets, HttpStatus.OK);
+		List<User> users = userService.getAllUsersByLoginId(loginIdPattern);
+		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 }
