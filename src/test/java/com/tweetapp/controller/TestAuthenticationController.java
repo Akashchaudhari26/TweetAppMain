@@ -1,4 +1,4 @@
-package com.tweetapp.unit.controller;
+package com.tweetapp.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

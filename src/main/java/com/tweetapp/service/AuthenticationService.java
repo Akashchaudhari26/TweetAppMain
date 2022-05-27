@@ -46,7 +46,7 @@ public class AuthenticationService {
 		return findByLoginId.get(0);
 	}
 
-	public User changePassword(ForgotPasswordRequest forgotPasswordRequest) throws InvalidOperationException {
+	 public User changePassword(ForgotPasswordRequest forgotPasswordRequest) throws InvalidOperationException {
 		List<User> findByLoginId = userRepository.findByLoginId(forgotPasswordRequest.getLoginId());
 		if(findByLoginId.size() == 0)
 			throw new InvalidOperationException("user not present!!");

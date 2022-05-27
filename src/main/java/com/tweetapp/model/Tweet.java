@@ -29,11 +29,11 @@ public class Tweet extends AudtitingDetails {
 	private String loginId;
 	private String message;
 	@Default
-	private List<String> tags = Collections.EMPTY_LIST;
+	private List<String> tags = Collections.emptyList();
 	@Default
-	private List<Like> likes = Collections.EMPTY_LIST;
+	private List<Like> likes = Collections.emptyList();
 	@Default
-	private List<Reply> replies = Collections.EMPTY_LIST;
+	private List<Reply> replies = Collections.emptyList();
 
 	public static Tweet buildTweet(TweetRequest tweetRequest) {
 		return Tweet.builder()
