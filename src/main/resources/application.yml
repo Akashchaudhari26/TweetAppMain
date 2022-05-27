@@ -2,7 +2,7 @@ spring:
   profiles:
     active: unit-testing
 server:
-  port: 8080
+  port: 8081
 logging:
   level:
     org:
@@ -103,3 +103,7 @@ spring:
       host: dev
       port: 27017
       database: tweet-app 
+
+management:
+  security:
+    enabled: false
