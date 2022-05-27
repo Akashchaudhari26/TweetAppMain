@@ -62,11 +62,15 @@ public class TestUserController {
 		testUser = User.buildUser(userRegisterRequest);
 
 		if (userRepository.existsByEmail(testUser.getEmail())) {
-			userRepository.delete(testUser);
+			userRepository.findByEmail(testUser.getEmail()).stream().forEach(user->{				
+				userRepository.delete(user);
+			});
 		}
 
 		if (userRepository.existsByLoginId(testUser.getLoginId())) {
-			userRepository.delete(testUser);
+			userRepository.findByEmail(testUser.getLoginId()).stream().forEach(user->{				
+				userRepository.delete(user);
+			});
 		}
 
 		testUser = userRepository.save(testUser);

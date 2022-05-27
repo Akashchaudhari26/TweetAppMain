@@ -1,5 +1,6 @@
 package com.tweetapp.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
@@ -9,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,7 +44,7 @@ public class TestAuthenticationController {
 	JwtUtils jwtUtils;
 
 	@Test
-	public void testRegisterUser_ValidInput() throws Exception {
+	void testRegisterUser_ValidInput() throws Exception {
 
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("FNTest").lastName("LN")
 				.email("mail@gmail.com").loginId("llee21").password("Pass@test1").phoneNumber("").build();
@@ -59,11 +59,15 @@ public class TestAuthenticationController {
 				.andExpect(status().isOk()).andReturn();
 
 		String contentAsString = mvcResult.getResponse().getContentAsString();
+		
+		String expectedStr = "{\"id\":null,\"firstName\":\"FNTest\",\"lastName\":\"LN\",\"email\":\"mail@gmail.com\",\"loginId\":\"llee21\",\"phoneNumber\":\"\"}";
+		
+		assertEquals(expectedStr, contentAsString);
 
 	}
 
 	@Test
-	public void testRegisterUser_InvalidFirstName() throws Exception {
+	void testRegisterUser_InvalidFirstName() throws Exception {
 
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("FN").lastName("LN")
 				.email("mail@gmail.com").loginId("llee21").password("Pass@test1").phoneNumber("").build();
@@ -80,7 +84,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testRegisterUser_InvalidLastName() throws Exception {
+	void testRegisterUser_InvalidLastName() throws Exception {
 
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("FNTest").lastName("")
 				.email("mail@gmail.com").loginId("llee21").password("Pass@test1").phoneNumber("").build();
@@ -96,7 +100,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testRegisterUser_InvalidEmail() throws Exception {
+	void testRegisterUser_InvalidEmail() throws Exception {
 
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("FNTest").lastName("LN")
 				.email("mailmaiom").loginId("llee21").password("Pass@test1").phoneNumber("").build();
@@ -112,7 +116,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testRegisterUser_InvalidPassword() throws Exception {
+	void testRegisterUser_InvalidPassword() throws Exception {
 
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("FNTest").lastName("LN")
 				.email("mail@gmail.com").loginId("llee21").password("test1").phoneNumber("").build();
@@ -127,7 +131,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testLogin_InvalidLoginId() throws Exception {
+	void testLogin_InvalidLoginId() throws Exception {
 		LoginRequest loginRequest = LoginRequest.builder().loginId("juf22").password("Test@Password1").build();
 
 		when(jwtUtils.generateJwtToken(any())).thenReturn("token");
@@ -141,7 +145,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testLogin_InvalidPassword() throws Exception {
+	void testLogin_InvalidPassword() throws Exception {
 		LoginRequest loginRequest = LoginRequest.builder().loginId("test_user").password("Test!Passwd1").build();
 
 		when(jwtUtils.generateJwtToken(any())).thenReturn("token");
@@ -155,7 +159,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testLogin_InvalidPasswordFormat() throws Exception {
+	void testLogin_InvalidPasswordFormat() throws Exception {
 		LoginRequest loginRequest = LoginRequest.builder().loginId("test_user").password("TestPasswd").build();
 
 		when(jwtUtils.generateJwtToken(any())).thenReturn("token");
@@ -169,7 +173,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testLogin_InvalidLoginIdAndPassword() throws Exception {
+	void testLogin_InvalidLoginIdAndPassword() throws Exception {
 		LoginRequest loginRequest = LoginRequest.builder().loginId("tester").password("T#swd1").build();
 
 		when(jwtUtils.generateJwtToken(any())).thenReturn("token");
@@ -183,7 +187,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testPasswordChange_Valid() throws Exception {
+	void testPasswordChange_Valid() throws Exception {
 		ForgotPasswordRequest forgotPasswordRequest = ForgotPasswordRequest.builder().loginId("test_user")
 				.password("Update@Password2").build();
 
@@ -199,7 +203,7 @@ public class TestAuthenticationController {
 	}
 
 	@Test
-	public void testPasswordChange_InValidPasswordFormat() throws Exception {
+	void testPasswordChange_InValidPasswordFormat() throws Exception {
 		ForgotPasswordRequest forgotPasswordRequest = ForgotPasswordRequest.builder().loginId("test_user")
 				.password("Updateassw").build();
 

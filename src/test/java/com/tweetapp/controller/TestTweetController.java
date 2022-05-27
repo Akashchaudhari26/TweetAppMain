@@ -19,7 +19,6 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -76,11 +75,15 @@ public class TestTweetController {
 		testUser = User.buildUser(userRegisterRequest);
 
 		if (userRepository.existsByEmail(testUser.getEmail())) {
-			userRepository.delete(testUser);
+			userRepository.findByEmail(testUser.getEmail()).stream().forEach(user -> {
+				userRepository.delete(user);
+			});
 		}
 
 		if (userRepository.existsByLoginId(testUser.getLoginId())) {
-			userRepository.delete(testUser);
+			userRepository.findByEmail(testUser.getLoginId()).stream().forEach(user -> {
+				userRepository.delete(user);
+			});
 		}
 
 		testUser = userRepository.save(testUser);
