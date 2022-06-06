@@ -12,14 +12,17 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Reply {
-
+	private String firstName;
+	private String lastName;
 	private String userLoginId;
 	private String message;
 
-	public static Reply buildReply(TweetReplyRequest replyRequest) {
+	public static Reply buildReply(TweetReplyRequest replyRequest,User user) {
 		return Reply.builder()
 				.userLoginId(replyRequest.getLoginId())
 				.message(replyRequest.getMessage())
+				.firstName(user.getFirstName())
+				.lastName(user.getLastName())
 				.build();
 	}
 }
