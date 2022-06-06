@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -172,7 +173,7 @@ public class TestTweetService {
 	void toggleTweetLike_ValidDislike() {
 
 		ArrayList<Like> list = new ArrayList<Like>();
-		list.add(Like.builder().userLoginId("").build());
+		list.add(Like.builder().userLoginId("some").build());
 
 		Tweet tweet = Tweet.builder().loginId("some").likes(list).build();
 		Optional<Tweet> optional = Optional.ofNullable(tweet);
@@ -288,4 +289,20 @@ public class TestTweetService {
 		assertEquals(2, tweets.size());
 
 	}
+	
+	@Test
+	void saveTweet_ValidCase() {
+		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
+		
+		when(tweetRepository.save(isA(Tweet.class))).thenReturn(Tweet.buildTweet(tweetRequest));
+		
+		Tweet tweet = tweetService.saveTweet(tweetRequest);
+		
+		String expectedMsg = "Hello1";
+		List<String> expectedTags = Arrays.asList();
+		
+		assertEquals(expectedMsg, tweet.getMessage());
+		assertEquals(expectedTags, tweet.getTags());
+	}
+	
 }

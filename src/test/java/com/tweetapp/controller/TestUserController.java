@@ -54,7 +54,7 @@ public class TestUserController {
 	UserService userService;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 
 		UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder().firstName("test").lastName("testing")
 				.email("test@ing.com").loginId("test_user").password(passeordEncoder.encode("Test@Password1")).build();
@@ -91,14 +91,14 @@ public class TestUserController {
 	}
 
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		token = "";
 		if (testUser != null)
 			userRepository.delete(testUser);
 	}
 
 	@Test
-	public void testGetAllTweets() throws Exception {
+	void testGetAllTweets() throws Exception {
 
 		int expectedCount = 1;
 
@@ -118,7 +118,7 @@ public class TestUserController {
 	}
 
 	@Test
-	public void testSearchByLoginId() throws Exception {
+	void testSearchByLoginId() throws Exception {
 
 		int expectedCount = 1;
 
@@ -139,7 +139,7 @@ public class TestUserController {
 	}
 
 	@Test
-	public void testSearchByLoginId_EmptyList() throws Exception {
+	void testSearchByLoginId_EmptyList() throws Exception {
 
 		int expectedCount = 0;
 
@@ -159,7 +159,7 @@ public class TestUserController {
 	}
 
 	@Test
-	public void testSearchByLoginId_WithNoToken() throws Exception {
+	void testSearchByLoginId_WithNoToken() throws Exception {
 
 		when(userService.getAllUsersByLoginId(anyString())).thenReturn(Arrays
 				.asList(User.builder().firstName("test").lastName("e").email("e@test.io").loginId("tedt_1").build()));
@@ -169,7 +169,7 @@ public class TestUserController {
 	}
 
 	@Test
-	public void testGetAllTweets_EmptyList() throws Exception {
+	void testGetAllTweets_EmptyList() throws Exception {
 
 		int expectedCount = 0;
 

@@ -142,7 +142,7 @@ public class TweetService {
 		return tweetlist;
 	}
 
-	public Tweet saveTweet(@Valid TweetRequest tweetRequest) {
+	public Tweet saveTweet(TweetRequest tweetRequest) {
 		Tweet tweet = Tweet.buildTweet(tweetRequest);
 		return tweetRepository.save(tweet);
 	}
