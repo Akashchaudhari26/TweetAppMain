@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginResponse {
 	private String jwtToken;
+	private Long expiresIn;
 	private User user;
 }
