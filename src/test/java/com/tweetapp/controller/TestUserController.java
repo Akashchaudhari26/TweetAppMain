@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class TestUserController {
 		String json = objectMapper.writeValueAsString(loginRequest);
 
 		MvcResult mvcResult = mockMvc
-				.perform(get("/api/v1.0/tweets/login").content(json).contentType(MediaType.APPLICATION_JSON))
+				.perform(post("/api/v1.0/tweets/login").content(json).contentType(MediaType.APPLICATION_JSON))
 				.andReturn();
 
 		String contentAsString = mvcResult.getResponse().getContentAsString();

@@ -92,7 +92,7 @@ public class TestTweetController {
 		String json = objectMapper.writeValueAsString(loginRequest);
 
 		MvcResult mvcResult = mockMvc
-				.perform(get("/api/v1.0/tweets/login").content(json).contentType(MediaType.APPLICATION_JSON))
+				.perform(post("/api/v1.0/tweets/login").content(json).contentType(MediaType.APPLICATION_JSON))
 				.andReturn();
 
 		String contentAsString = mvcResult.getResponse().getContentAsString();
@@ -119,7 +119,8 @@ public class TestTweetController {
 		String json = objectMapper.writeValueAsString(tweetRequest);
 
 		// when
-		Tweet updatedTweet = Tweet.buildTweet(tweetRequest);
+		User user = User.builder().build();
+		Tweet updatedTweet = Tweet.buildTweet(tweetRequest,user);
 
 		when(tweetService.updateTweet(isA(TweetRequest.class), anyString())).thenReturn(updatedTweet);
 
@@ -144,8 +145,9 @@ public class TestTweetController {
 		String json = objectMapper.writeValueAsString(tweetRequest);
 
 		// when
-		Tweet updatedTweet = Tweet.buildTweet(tweetRequest);
-
+		User user = User.builder().build();
+		Tweet updatedTweet = Tweet.buildTweet(tweetRequest,user);
+		
 		when(tweetService.updateTweet(isA(TweetRequest.class), anyString())).thenReturn(updatedTweet);
 
 		MvcResult mvcResult = mockMvc.perform(put("/api/v1.0/tweets/test_user/update/" + testTweetId)
@@ -222,7 +224,9 @@ public class TestTweetController {
 		TweetRequest tweetRequest = TweetRequest.builder().message("test message").tags("").build();
 		String json = objectMapper.writeValueAsString(tweetRequest);
 		
-		when(tweetService.saveTweet(isA(TweetRequest.class))).thenReturn(Tweet.buildTweet(tweetRequest));
+		User user = User.builder().build();
+		
+		when(tweetService.saveTweet(isA(TweetRequest.class))).thenReturn(Tweet.buildTweet(tweetRequest,user));
 		
 		mockMvc.perform(post("/api/v1.0/tweets/test_user/post/")
 				.header("Authorization", "Bearer " + token).content(json).contentType(MediaType.APPLICATION_JSON))
@@ -263,8 +267,10 @@ public class TestTweetController {
 				.tweetId(testTweetId).build();
 		String json = objectMapper.writeValueAsString(tweetReplyRequest);
 
-		Tweet tweet = Tweet.buildTweet(tweetRequest);
-		Reply reply = Reply.buildReply(tweetReplyRequest);
+		User user = User.builder().build();
+		
+		Tweet tweet = Tweet.buildTweet(tweetRequest,user);
+		Reply reply = Reply.buildReply(tweetReplyRequest,user);
 		tweet.setReplies(Arrays.asList(reply));
 
 		// when
@@ -288,7 +294,8 @@ public class TestTweetController {
 		int expectedCount = 1;
 		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
 
-		when(tweetService.getAllTweets()).thenReturn(Arrays.asList(Tweet.buildTweet(tweetRequest)));
+		User user = User.builder().build();
+		when(tweetService.getAllTweets()).thenReturn(Arrays.asList(Tweet.buildTweet(tweetRequest,user)));
 
 		MvcResult mvcResult = mockMvc.perform(get("/api/v1.0/tweets/all").header("Authorization", "Bearer " + token))
 				.andReturn();
@@ -309,8 +316,10 @@ public class TestTweetController {
 		int expectedCount = 1;
 		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
 
+		User user = User.builder().build();
+		
 		// when
-		when(tweetService.getAllTweetsOfUser(anyString())).thenReturn(Arrays.asList(Tweet.buildTweet(tweetRequest)));
+		when(tweetService.getAllTweetsOfUser(anyString())).thenReturn(Arrays.asList(Tweet.buildTweet(tweetRequest,user)));
 
 		MvcResult mvcResult = mockMvc
 				.perform(get("/api/v1.0/tweets/test_user").header("Authorization", "Bearer " + token)).andReturn();

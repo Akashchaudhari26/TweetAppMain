@@ -27,6 +27,7 @@ import com.tweetapp.exception.InvalidOperationException;
 import com.tweetapp.model.Like;
 import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
+import com.tweetapp.model.User;
 import com.tweetapp.repository.TweetRepository;
 import com.tweetapp.repository.UserRepository;
 
@@ -215,10 +216,13 @@ public class TestTweetService {
 
 		Tweet tweet = Tweet.builder().loginId("someId").replies(reply).build();
 		Optional<Tweet> optional = Optional.ofNullable(tweet);
-		System.out.println(optional.isPresent());
+		Optional<User> optionalUser = Optional.ofNullable(User.builder().build());
+		
 		when(tweetRepository.findById(anyString())).thenReturn(optional);
+		when(userRepository.findById(anyString())).thenReturn(optionalUser);
 
-		Reply expectedReply = Reply.buildReply(tweetReplyRequest);
+		User user = User.builder().build();
+		Reply expectedReply = Reply.buildReply(tweetReplyRequest,user);
 
 		Tweet replyTweet = tweetService.replyTweet(tweetReplyRequest);
 
@@ -294,7 +298,11 @@ public class TestTweetService {
 	void saveTweet_ValidCase() {
 		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
 		
-		when(tweetRepository.save(isA(Tweet.class))).thenReturn(Tweet.buildTweet(tweetRequest));
+		User user = User.builder().build();
+		Optional<User> optionalUser = Optional.ofNullable(User.builder().build());
+		when(userRepository.findById(anyString())).thenReturn(optionalUser);
+		when(tweetRepository.save(isA(Tweet.class))).thenReturn(Tweet.buildTweet(tweetRequest,user));
+
 		
 		Tweet tweet = tweetService.saveTweet(tweetRequest);
 		

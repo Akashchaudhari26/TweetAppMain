@@ -108,7 +108,7 @@ public class TweetService {
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		Tweet tweet = optionalTweet.get();
-		User user = userRepository.findById(replyRequest.getLoginId()).get();
+		User user = userRepository.findByLoginId(replyRequest.getLoginId()).get(0);
 		Reply reply = Reply.buildReply(replyRequest,user);
 		List<Reply> replies = tweet.getReplies();
 		replies.add(reply);
@@ -144,7 +144,7 @@ public class TweetService {
 	}
 
 	public Tweet saveTweet(TweetRequest tweetRequest) {
-		User user = userRepository.findById(tweetRequest.getLoginId()).get();
+		User user = userRepository.findByLoginId(tweetRequest.getLoginId()).get(0);
 		Tweet tweet = Tweet.buildTweet(tweetRequest,user);
 		return tweetRepository.save(tweet);
 	}
