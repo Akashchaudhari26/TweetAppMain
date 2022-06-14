@@ -27,6 +27,8 @@ public class Tweet extends AudtitingDetails {
 	@Id
 	private String id;
 	private String loginId;
+	private String firstName;
+	private String lastName;
 	private String message;
 	@Default
 	private List<String> tags = Collections.emptyList();
@@ -35,10 +37,12 @@ public class Tweet extends AudtitingDetails {
 	@Default
 	private List<Reply> replies = Collections.emptyList();
 
-	public static Tweet buildTweet(TweetRequest tweetRequest) {
+	public static Tweet buildTweet(TweetRequest tweetRequest,User user) {
 		return Tweet.builder()
 				.id(tweetRequest.getTweetId())
 				.loginId(tweetRequest.getLoginId())
+				.firstName(user.getFirstName())
+				.lastName(user.getLastName())
 				.message(tweetRequest.getMessage())
 				.tags(Arrays.asList(tweetRequest.getTags().split("#")).stream()
 						.filter(tag -> !tag.isEmpty()).collect(Collectors.toList()))

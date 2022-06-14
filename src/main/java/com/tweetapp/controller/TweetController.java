@@ -27,7 +27,7 @@ import com.tweetapp.service.TweetService;
 
 @RestController
 @RequestMapping("/api/v1.0/tweets")
-@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",maxAge = 3600)
 public class TweetController {
 
 	@Autowired

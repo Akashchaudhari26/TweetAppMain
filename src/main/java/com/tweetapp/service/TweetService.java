@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,7 @@ import com.tweetapp.exception.InvalidOperationException;
 import com.tweetapp.model.Like;
 import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
+import com.tweetapp.model.User;
 import com.tweetapp.repository.TweetRepository;
 import com.tweetapp.repository.UserRepository;
 
@@ -43,7 +42,8 @@ public class TweetService {
 
 		TweetRequest tweetRequest = objectMapper.readValue(consumerRecord.value(), TweetRequest.class);
 
-		Tweet tweet = Tweet.buildTweet(tweetRequest);
+		User user = userRepository.findById(tweetRequest.getLoginId()).get();
+		Tweet tweet = Tweet.buildTweet(tweetRequest,user);
 
 		Tweet savedTweet = tweetRepository.save(tweet);
 		log.info("{} Tweet is saved to database", savedTweet);
@@ -108,7 +108,8 @@ public class TweetService {
 		}
 		log.info("Validation is successfull for the Tweet: {}", optionalTweet.get());
 		Tweet tweet = optionalTweet.get();
-		Reply reply = Reply.buildReply(replyRequest);
+		User user = userRepository.findByLoginId(replyRequest.getLoginId()).get(0);
+		Reply reply = Reply.buildReply(replyRequest,user);
 		List<Reply> replies = tweet.getReplies();
 		replies.add(reply);
 		tweet.setReplies(replies);
@@ -143,7 +144,8 @@ public class TweetService {
 	}
 
 	public Tweet saveTweet(TweetRequest tweetRequest) {
-		Tweet tweet = Tweet.buildTweet(tweetRequest);
+		User user = userRepository.findByLoginId(tweetRequest.getLoginId()).get(0);
+		Tweet tweet = Tweet.buildTweet(tweetRequest,user);
 		return tweetRepository.save(tweet);
 	}
 }
