@@ -216,10 +216,9 @@ public class TestTweetService {
 
 		Tweet tweet = Tweet.builder().loginId("someId").replies(reply).build();
 		Optional<Tweet> optional = Optional.ofNullable(tweet);
-		Optional<User> optionalUser = Optional.ofNullable(User.builder().build());
 		
 		when(tweetRepository.findById(anyString())).thenReturn(optional);
-		when(userRepository.findById(anyString())).thenReturn(optionalUser);
+		when(userRepository.findByLoginId(anyString())).thenReturn(Arrays.asList(User.builder().build()));
 
 		User user = User.builder().build();
 		Reply expectedReply = Reply.buildReply(tweetReplyRequest,user);
@@ -296,12 +295,11 @@ public class TestTweetService {
 	
 	@Test
 	void saveTweet_ValidCase() {
-		TweetRequest tweetRequest = TweetRequest.builder().message("Hello1").tags("").build();
+		TweetRequest tweetRequest = TweetRequest.builder().loginId("").message("Hello1").tags("").build();
 		
 		User user = User.builder().build();
-		Optional<User> optionalUser = Optional.ofNullable(User.builder().build());
-		when(userRepository.findById(anyString())).thenReturn(optionalUser);
 		when(tweetRepository.save(isA(Tweet.class))).thenReturn(Tweet.buildTweet(tweetRequest,user));
+		when(userRepository.findByLoginId(anyString())).thenReturn(Arrays.asList(User.builder().firstName("test").build(),User.builder().firstName("test1").build()));
 
 		
 		Tweet tweet = tweetService.saveTweet(tweetRequest);

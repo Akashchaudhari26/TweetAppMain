@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local-without-kafka
+    active: mongo-atlas
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -65,6 +65,17 @@ spring:
       port: 27017
       database: tweet-app 
 
+---
+spring:
+  config:
+    activate:
+      on-profile: mongo-atlas
+  kafka:
+    enable: false
+  data:
+    mongodb:
+      uri: mongodb+srv://striders:q0qYosTL8IeN5MtO@cluster0.woe3d.mongodb.net/?retryWrites=true&w=majority
+      database: tweet-app 
          
 ---
 spring:

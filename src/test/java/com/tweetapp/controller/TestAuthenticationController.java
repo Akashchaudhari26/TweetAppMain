@@ -197,7 +197,7 @@ public class TestAuthenticationController {
 				User.builder().firstName("Fname").lastName("ln").email("yo@gma.com").loginId("eed").build());
 
 		mockMvc.perform(
-				get("/api/v1.0/tweets/test_user/forgot").content(valueAsString).contentType(MediaType.APPLICATION_JSON))
+				post("/api/v1.0/tweets/test_user/forgot").content(valueAsString).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
 	}
@@ -213,7 +213,7 @@ public class TestAuthenticationController {
 				.thenThrow(InvalidOperationException.class);
 
 		mockMvc.perform(
-				get("/api/v1.0/tweets/test_user/forgot").content(valueAsString).contentType(MediaType.APPLICATION_JSON))
+				post("/api/v1.0/tweets/test_user/forgot").content(valueAsString).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError());
 	}
 
